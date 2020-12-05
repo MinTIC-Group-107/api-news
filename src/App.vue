@@ -31,7 +31,7 @@
           <label for="category" class="mb-2 mr-sm-2">Categoría: </label>
           <select
             id="category"
-            class="custom-select mb-2 mr-sm-2"
+            class="custom-select mb-2"
             v-model="category"
             @change="loadNews"
           >
@@ -63,6 +63,7 @@
 import "bootstrap";
 import NewsPanel from "./components/NewsPanel";
 const axios = require("axios");
+axios.defaults.baseURL = "https://newsapi.org";
 axios.defaults.headers = {
   "X-Api-Key": process.env.VUE_APP_API_NEWS_KEY
 };
@@ -91,18 +92,24 @@ export default {
     this.loadNews();
   },
   methods: {
-    loadNews() {
+    async loadNews() {
       // const apiKey = process.env.VUE_APP_API_NEWS_KEY;
       // let url = `https://newsapi.org/v2/top-headlines?country=co&category=${this.category}&apiKey=${apiKey}`;
-      let url = `https://newsapi.org/v2/top-headlines?country=co&category=${this.category}`;
-      axios
-        .get(url)
-        .then(response => {
-          this.news = response.data.articles;
-        })
-        .catch(error => {
-          console.log(error);
-        });
+      let url = `/v2/top-headlines?country=co&category=${this.category}`;
+      // axios
+      //   .get(url)
+      //   .then(response => {
+      //     this.news = response.data.articles;
+      //   })
+      //   .catch(error => {
+      //     console.log(error);
+      //   });
+      try {
+        const response = await axios.get(url);
+        this.news = response.data.articles;
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 };
